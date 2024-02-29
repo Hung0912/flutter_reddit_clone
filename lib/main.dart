@@ -39,7 +39,6 @@ class _MyAppState extends ConsumerState<MyApp> {
         .getUserData(data.uid)
         .first;
     ref.read(userProvider.notifier).update((state) => userModel);
-    setState(() {});
   }
 
   @override
@@ -49,11 +48,11 @@ class _MyAppState extends ConsumerState<MyApp> {
             return MaterialApp.router(
               title: 'Reddit Clone',
               debugShowCheckedModeBanner: false,
-              theme: Pallete.darkModeAppTheme,
+              theme: ref.watch(themeNotifierProvider),
               routerDelegate: RoutemasterDelegate(routesBuilder: (context) {
                 if (data != null) {
                   getUserData(data);
-                  if (userModel != null) {
+                  if (ref.watch(userProvider) != null) {
                     return loggedInRoute;
                   }
                 }
