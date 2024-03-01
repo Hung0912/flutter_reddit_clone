@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:reddit_clone/core/constants/firebase_constants.dart';
-import 'package:reddit_clone/core/enums.dart';
 import 'package:reddit_clone/core/failure.dart';
 import 'package:reddit_clone/core/type_defs.dart';
 import 'package:reddit_clone/models/post_model.dart';

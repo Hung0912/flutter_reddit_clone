@@ -34,9 +34,20 @@ class AuthController extends StateNotifier<bool> {
         _ref = ref,
         super(false); // for loading
 
-  void signInWithGoolge(BuildContext context) async {
+  void signInWithGoolge(BuildContext context, bool isFromLogin) async {
     state = true;
-    final user = await _authRepository.signInWithGoolge();
+    final user = await _authRepository.signInWithGoolge(isFromLogin);
+    state = false;
+    user.fold(
+      (l) => showSnackBar(context, l.message),
+      (userModel) =>
+          _ref.read(userProvider.notifier).update((state) => userModel),
+    );
+  }
+
+  void signInAsGuest(BuildContext context) async {
+    state = true;
+    final user = await _authRepository.signInAsGuest();
     state = false;
     user.fold(
       (l) => showSnackBar(context, l.message),

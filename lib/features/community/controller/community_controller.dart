@@ -13,9 +13,9 @@ import 'package:reddit_clone/models/community_model.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:routemaster/routemaster.dart';
 
-final userCommunitiesProvider = StreamProvider((ref) {
+final userCommunitiesProvider = StreamProvider.family((ref, String uid) {
   final communityController = ref.watch(communityControllerProvider.notifier);
-  return communityController.getUserCommunities();
+  return communityController.getUserCommunities(uid);
 });
 
 final getCommunityByNameProvider = StreamProvider.family((ref, String name) {
@@ -83,8 +83,7 @@ class CommunityController extends StateNotifier<bool> {
     );
   }
 
-  Stream<List<Community>> getUserCommunities() {
-    final uid = ref.read(userProvider)!.uid;
+  Stream<List<Community>> getUserCommunities(String uid) {
     return _communityRepository.getUserCommunities(uid);
   }
 

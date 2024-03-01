@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:reddit_clone/core/common/error_text.dart';
 import 'package:reddit_clone/core/common/loader.dart';
 import 'package:reddit_clone/core/utils.dart';
+import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
 import 'package:reddit_clone/features/community/controller/community_controller.dart';
 import 'package:reddit_clone/features/post/controller/post_controller.dart';
 import 'package:reddit_clone/models/community_model.dart';
@@ -83,6 +84,7 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
   Widget build(BuildContext context) {
     final currentTheme = ref.watch(themeNotifierProvider);
     final isLoading = ref.watch(postControllerProvider);
+    final user = ref.watch(userProvider)!;
 
     final isTypeImage = widget.type == 'image';
     final isTypeText = widget.type == 'text';
@@ -167,7 +169,7 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
                     alignment: Alignment.topLeft,
                     child: Text('Select Community'),
                   ),
-                  ref.watch(userCommunitiesProvider).when(
+                  ref.watch(userCommunitiesProvider(user.uid)).when(
                         data: (data) {
                           communities = data;
 

@@ -27,6 +27,9 @@ class PostRepository {
   CollectionReference get _comments =>
       _firestore.collection(FirebaseConstants.commentsCollection);
 
+  CollectionReference get _users =>
+      _firestore.collection(FirebaseConstants.userCollection);
+
   FutureVoid addPost(Post post) async {
     try {
       return right(_posts.doc(post.id).set(post.toMap()));
@@ -44,6 +47,22 @@ class PostRepository {
           whereIn: communities.map((e) => e.name).toList(),
         )
         .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map(
+          (event) => event.docs
+              .map(
+                (e) => Post.fromMap(
+                  e.data() as Map<String, dynamic>,
+                ),
+              )
+              .toList(),
+        );
+  }
+
+  Stream<List<Post>> fetchGuestPosts() {
+    return _posts
+        .orderBy('createdAt', descending: true)
+        .limit(10)
         .snapshots()
         .map(
           (event) => event.docs
@@ -114,6 +133,24 @@ class PostRepository {
           {'commentCount': FieldValue.increment(1)},
         ),
       );
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureVoid awardPost(Post post, String award, String senderId) async {
+    try {
+      _posts.doc(post.id).update({
+        'awards': FieldValue.arrayUnion([award])
+      });
+      _users.doc(senderId).update({
+        'awards': FieldValue.arrayRemove([award])
+      });
+      return right(_users.doc(post.uid).update({
+        'awards': FieldValue.arrayUnion([award])
+      }));
     } on FirebaseException catch (e) {
       throw e.message!;
     } catch (e) {

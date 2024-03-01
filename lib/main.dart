@@ -35,7 +35,7 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   void getUserData(User data) async {
     userModel = await ref
-        .watch(authControllerProvider.notifier)
+        .read(authControllerProvider.notifier)
         .getUserData(data.uid)
         .first;
     ref.read(userProvider.notifier).update((state) => userModel);
@@ -52,6 +52,7 @@ class _MyAppState extends ConsumerState<MyApp> {
               routerDelegate: RoutemasterDelegate(routesBuilder: (context) {
                 if (data != null) {
                   getUserData(data);
+
                   if (ref.watch(userProvider) != null) {
                     return loggedInRoute;
                   }

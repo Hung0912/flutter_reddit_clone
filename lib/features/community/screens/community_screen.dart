@@ -30,6 +30,7 @@ class CommunityScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider)!;
+    final isGuest = !user.isAuthenticated;
 
     return Scaffold(
       body: ref.watch(getCommunityByNameProvider(name)).when(
@@ -72,40 +73,41 @@ class CommunityScreen extends ConsumerWidget {
                                 style: const TextStyle(
                                     fontSize: 19, fontWeight: FontWeight.bold),
                               ),
-                              community.mods.contains(user.uid)
-                                  ? OutlinedButton(
-                                      onPressed: () =>
-                                          navigateToModTools(context),
-                                      style: ElevatedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
+                              if (!isGuest)
+                                community.mods.contains(user.uid)
+                                    ? OutlinedButton(
+                                        onPressed: () =>
+                                            navigateToModTools(context),
+                                        style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 25),
                                         ),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 25),
-                                      ),
-                                      child: const Text("Mod Tools"),
-                                    )
-                                  : OutlinedButton(
-                                      onPressed: () => joinCommunity(
-                                        context,
-                                        community,
-                                        ref,
-                                      ),
-                                      style: ElevatedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
+                                        child: const Text("Mod Tools"),
+                                      )
+                                    : OutlinedButton(
+                                        onPressed: () => joinCommunity(
+                                          context,
+                                          community,
+                                          ref,
                                         ),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 25),
+                                        style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 25),
+                                        ),
+                                        child: Text(
+                                          community.members.contains(user.uid)
+                                              ? "Leave"
+                                              : "Join",
+                                        ),
                                       ),
-                                      child: Text(
-                                        community.members.contains(user.uid)
-                                            ? "Leave"
-                                            : "Join",
-                                      ),
-                                    ),
                             ],
                           ),
                           Padding(
